@@ -1,0 +1,176 @@
+# Enable extras.ubuntu.com.
+d-i	apt-setup/extras	boolean false
+# Install the Ubuntu desktop.
+tasksel	tasksel/first	multiselect ubuntu-desktop
+# On live DVDs, don't spend huge amounts of time removing substantial
+# application packages pulled in by language packs. Given that we clearly
+# have the space to include them on the DVD, they're useful and we might as
+# well keep them installed.
+#ubiquity	ubiquity/keep-installed	string icedtea6-plugin openoffice.org
+d-i	partman/default_filesystem string ext3
+d-i	pkgsel/install-language-support boolean false
+d-i	mirror/protocol string https
+d-i	mirror/country string manual
+d-i	mirror/https/hostname string sysopspackages.icpc.global
+d-i	mirror/https/directory string /ubuntu
+d-i	mirror/https/proxy string
+d-i apt-setup/restrifcted boolean true
+d-i apt-setup/universe boolean true
+d-i apt-setup/backports boolean true
+# Uncomment this if you don't want to use a network mirror.
+d-i apt-setup/use_mirror boolean false
+# Select which update services to use; define the mirrors to be used.
+# Values shown below are the normal defaults.
+# change to none in attempt to disable, added as https in local2
+d-i apt-setup/services-select multiselect none
+d-i apt-setup/security_host string
+d-i apt-setup/security_path string
+
+# Additional repositories, local[0-9] available
+d-i apt-setup/local0/repository string \
+       https://sysopspackages.icpc.global/ubuntu jammy main restricted universe multiverse
+d-i apt-setup/local0/comment string sysopspackages.icpc.global jammy mirror
+d-i apt-setup/local0/source boolean false
+d-i apt-setup/local1/repository string \
+       https://sysopspackages.icpc.global/ubuntu jammy-security main restricted universe multiverse
+d-i apt-setup/local1/comment string sysopspackages.icpc.global jammy-security mirror
+d-i apt-setup/local1/source boolean false
+d-i apt-setup/local2/repository string \
+       https://sysopspackages.icpc.global/ubuntu jammy-updates main restricted universe multiverse
+d-i apt-setup/local2/comment string sysopspackages.icpc.global jammy-updates mirror
+d-i apt-setup/local2/source boolean false
+d-i apt-setup/local3/repository string \
+       https://sysopspackages.icpc.global/apt/jammy jammy main
+d-i apt-setup/local3/comment string sysopspackages.icpc.global local
+# Disable deb-src lines
+d-i apt-setup/local3/source boolean false
+d-i apt-setup/local4/repository string \
+       https://sysopspackages.icpc.global/vscode stable main
+d-i apt-setup/local4/comment string sysopspackages.icpc.global vscode
+d-i apt-setup/local4/source boolean false
+# attempt to restrict apt to amd64 not i386
+d-i apt-setup/multiarch string amd64
+# URL to the public key of the local repository; you must provide a key or
+# apt will complain about the unauthenticated repository and so the
+# sources.list line will be left commented out
+# seems unneeded with s3
+#d-i apt-setup/local0/key string https://sysopspackages.icpc.global/icpc-sysops-packages.s3.us-west-1.amazonaws.com.pub
+#d-i apt-setup/local1/key string https://sysopspackages.icpc.global/icpc-sysops-packages.s3.us-west-1.amazonaws.com.pub
+# ABOVE is standard
+# based on http://blog.scottlowe.org/2015/05/20/fully-automated-ubuntu-install/
+# below is cobled together from https://gist.github.com/lowescott/9116c0bf80f931a5eca2
+# also https://help.ubuntu.com/16.04/installation-guide/amd64/apb.html
+# required duplicates of "locale=en_US.UTF-8 keyboard-configuration/layoutcode=us hostname=unassigned"
+# from the boot line
+d-i debian-installer/locale string en_US.UTF-8
+d-i debian-installer/splash boolean false
+d-i console-setup/ask_detect boolean false
+# per the 16.04 example xkb-keymap is used not layoutcode
+d-i keyboard-configuration/xkb-keymap select :KAVcYf7BkWWqxnyR24Isq
+d-i keyboard-configuration/layoutcode string us
+d-i keyboard-configuration/variantcode string
+ubiquity languagechooser/language-name English
+ubiquity countrychooser/shortlist US/Mountain
+ubiquity localechooser/supported-locales en_US.UTF-8
+ubiquity ubiquity/use_nonfree boolean false
+ubiquity ubiquity/download_updates boolean false
+d-i ubiquity/summary note
+ubiquity ubiquity/reboot boolean true
+
+ubiquity partman-auto/init_automatically_partition select Guided - use entire disk
+ubiquity partman-auto/disk string /dev/sda
+ubiquity partman-auto/method string regular
+ubiquity partman-auto/choose_recipe select All files in open artition (recommended for new users)
+ubiquity partman/confirm_write_new_label boolean true
+ubiquity partman/choose_partition select Finish partitioning and write changes to disk
+ubiquity partman/confirm boolean true
+# disable network configuration
+d-i netcfg/enable boolean false
+d-i netcfg/get_hostname string unassigned-hostname
+d-i netcfg/get_domain string unassigned-domain
+d-i netcfg/disable_autoconfig boolean true
+d-i clock-setup/utc boolean true
+d-i time/zone string Asia/Almaty
+d-i clock-setup/ntp boolean true
+d-i partman-auto/disk string /dev/sda
+d-i partman-auto/method string regular
+d-i partman-lvm/device_remove_lvm boolean true
+d-i partman-lvm/device_remove_lvm_span boolean true
+d-i partman-auto/purge_lvm_from_device boolean true
+d-i partman-auto/expert_recipe string \
+    standard ::                       \
+      538 538 1075 free               \
+        $iflabel{ gpt }               \
+        $reusemethod{ }               \
+        method{ efi }                 \
+        format{ }                     \
+      .                               \
+      128 512 256 ext2                \
+        $defaultignore{ }             \
+        method{ format }              \
+        format{ }                     \
+        use_filesystem{ }             \
+	filesystem{ ext2 }            \
+	mountpoint{ /boot }           \
+      .                               \
+      500 10000 -1 ext3               \
+	$primary{ }                   \
+	$bootable{ }                  \
+	method{ format }              \
+	format{ }                     \
+	use_filesystem{ }             \
+	filesystem{ ext3 }            \
+	mountpoint{ / }               \
+      .                               \
+      100% 512 200% linux-swap        \
+        $reusemethod{ }               \
+	method{ swap }                \
+	format{ }                     \
+      .
+d-i partman-auto/choose_recipe standard
+d-i partman-efi/non_efi_system boolean true
+d-i partman/choose_partition select Finish partitioning and write changes to disk
+# This makes partman automatically partition without confirmation.
+d-i partman-md/confirm boolean true
+d-i partman-partitioning/confirm_write_new_label boolean true
+d-i partman/choose_partition select finish
+d-i partman/confirm boolean true
+d-i partman/confirm_nooverwrite boolean true
+# this is not listed in 16.04:
+d-i partman-auto/confirm boolean true
+
+d-i passwd/root-login boolean false
+d-i passwd/make-user boolean true
+#d-i passwd/root-password password r00tme
+#d-i passwd/root-password-again password r00tme
+d-i passwd/make-user boolean true
+d-i passwd/user-fullname string yc
+d-i passwd/username string yc
+# d-i passwd/user-password password passw0rd
+# d-i passwd/user-password-again password passw0rd
+d-i passwd/user-password-crypted password $6$UKai2yFOPb8$KAVcYf7BkWWqxnyR24Is/1rvcSTfuOA3uiA65OszXtsmuo3kif4W6gdND0iclBS6ihrN2N5PoiObUVulfEOxg/
+d-i user-setup/allow-password-weak boolean true
+d-i user-setup/encrypt-home boolean false
+# why?
+#d-i pkgsel/include string openssh-server update-motd
+#tasksel tasksel/first multiselect server, openssh-server
+# no automatic updates
+d-i pkgsel/update-policy select none
+d-i grub-installer/only_debian boolean true
+d-i grub-installer/with_other_os boolean false
+d-i base-installer/install-recommends boolean false
+d-i grub-installer/bootdev string /dev/sda
+popularity-contest popularity-contest/participate boolean false
+# avoid that last message about install being complete
+d-i finish-install/reboot_in_progress note
+#ubiquity ubiquity/success_command \
+#  string mkdir /target/yc/; \
+#  wget http://10.217.47.1/init/test.sh -O /target/yc/test.sh; \
+#  chroot /target chmod +x /yc/test.sh; \
+#  chroot /target bash "/yc/test.sh"
+
+ubiquity ubiquity/success_command string \
+  in-target mkdir /yc/; \
+  in-target wget http://10.217.47.1/init/test.sh -O /yc/test.sh; \
+  in-target chmod +x /yc/test.sh; \
+  in-target bash "/yc/test.sh";
