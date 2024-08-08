@@ -3,9 +3,9 @@
 set +e
 set -x
 
-sudo ip addr add 10.217.47.1/24 dev enp0s31f6
-sudo ip addr add 10.217.47.12/24 dev enp0s31f6
-sudo ip link set dev enp0s31f6 up
+sudo ip addr add 10.217.35.1/24 dev eth0
+sudo ip addr add 10.217.35.235/24 dev eth0
+sudo ip link set dev eth0 up
 
 sudo systemctl restart isc-dhcp-server
 
@@ -34,28 +34,25 @@ LABEL wfos
   MENU LABEL PXE WFOS with http
   kernel wfos/vmlinuz
   initrd wfos/initrd
-  append iso ip=dhcp url=http://10.217.47.1/wfos.iso automatic-ubiquity url=http://10.217.47.1/preseed/contest.seed  --
+  append iso ip=dhcp url=http://10.217.35.1/wfos.iso automatic-ubiquity url=http://10.217.35.1/preseed/contest.seed  --
 EOF
 
-if [ -d /srv/tftp/wfos ]; then
+#if [ -d /srv/tftp/wfos ]; then
     # Remove the folder
-    sudo rm -r /srv/tftp/wfos
-fi
+#    sudo rm -r /srv/tftp/wfos
+#fi
 
-sudo mkdir /srv/tftp/wfos
-sudo mount -o ro,loop /home/server/Downloads/icpc/wfos.iso /mnt
-sudo cp /mnt/casper/{initrd,vmlinuz} /srv/tftp/wfos
-
-sudo umount /mnt
+#sudo mkdir /srv/tftp/wfos
+#sudo mount -o ro,loop /home/wfos.iso /mnt
+#sudo cp /mnt/casper/{initrd,vmlinuz} /srv/tftp/wfos
+#sudo umount /mnt
 
 
 if [ -f /var/www/html/wfos.iso ]; then
     # Remove the folder
     sudo rm /var/www/html/wfos.iso
 fi
-
-sudo ln /home/server/Downloads/icpc/wfos.iso /var/www/html/wfos.iso
-
+sudo ln /home/wfos.iso /var/www/html/wfos.iso
 sudo systemctl restart apache2
 
 echo done

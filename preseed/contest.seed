@@ -163,14 +163,14 @@ d-i grub-installer/bootdev string /dev/sda
 popularity-contest popularity-contest/participate boolean false
 # avoid that last message about install being complete
 d-i finish-install/reboot_in_progress note
-#ubiquity ubiquity/success_command \
-#  string mkdir /target/yc/; \
-#  wget http://10.217.47.1/init/test.sh -O /target/yc/test.sh; \
-#  chroot /target chmod +x /yc/test.sh; \
-#  chroot /target bash "/yc/test.sh"
+ubiquity ubiquity/success_command \
+  string mkdir /target/yc/; \
+  wget http://10.217.35.1/init/test.sh -O /target/yc/test.sh; \
+  chroot /target chmod +x /yc/test.sh; \
+  chroot /target bash "/yc/test.sh"
 
-ubiquity ubiquity/success_command string \
-  in-target mkdir /yc/; \
-  in-target wget http://10.217.47.1/init/test.sh -O /yc/test.sh; \
-  in-target chmod +x /yc/test.sh; \
-  in-target bash "/yc/test.sh";
+#ubiquity ubiquity/success_command string \
+#  in-target mkdir /yc/; \
+#  in-target wget http://10.217.35.1/init/test.sh -O /yc/test.sh; \
+#  in-target chmod +x /yc/test.sh; \
+#  in-target bash "/yc/test.sh";
