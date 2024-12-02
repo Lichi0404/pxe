@@ -90,8 +90,9 @@ d-i netcfg/get_hostname string unassigned-hostname
 d-i netcfg/get_domain string unassigned-domain
 d-i netcfg/disable_autoconfig boolean true
 d-i clock-setup/utc boolean true
-d-i time/zone string Asia/Almaty
+d-i time/zone string Asia/Kuala_Lumpur
 d-i clock-setup/ntp boolean true
+d-i clock-setup/ntp-server string 10.217.35.254
 d-i partman-auto/disk string /dev/sda
 d-i partman-auto/method string regular
 d-i partman-lvm/device_remove_lvm boolean true
@@ -144,11 +145,11 @@ d-i passwd/make-user boolean true
 #d-i passwd/root-password password r00tme
 #d-i passwd/root-password-again password r00tme
 d-i passwd/make-user boolean true
-d-i passwd/user-fullname string yc
-d-i passwd/username string yc
-# d-i passwd/user-password password passw0rd
-# d-i passwd/user-password-again password passw0rd
-d-i passwd/user-password-crypted password $6$UKai2yFOPb8$KAVcYf7BkWWqxnyR24Is/1rvcSTfuOA3uiA65OszXtsmuo3kif4W6gdND0iclBS6ihrN2N5PoiObUVulfEOxg/
+d-i passwd/user-fullname string nsspc
+d-i passwd/username string nsspc
+# d-i passwd/user-password password nasa2024ntu
+# d-i passwd/user-password-again password nasa2024ntu
+d-i passwd/user-password-crypted password $6$zAaKf7oh0kw55Etp$2hBHOw6by2tP1yoyfd8qGQUDSuz9Qc5DFgWWAmc.X9oP5QoriPCDVfV8meeDHt3.FzHTKijDgXKcxE.dCH/G0/
 d-i user-setup/allow-password-weak boolean true
 d-i user-setup/encrypt-home boolean false
 # why?
@@ -164,13 +165,9 @@ popularity-contest popularity-contest/participate boolean false
 # avoid that last message about install being complete
 d-i finish-install/reboot_in_progress note
 ubiquity ubiquity/success_command \
-  string mkdir /target/yc/; \
-  wget http://10.217.35.1/init/test.sh -O /target/yc/test.sh; \
-  chroot /target chmod +x /yc/test.sh; \
-  chroot /target bash "/yc/test.sh"
-
-#ubiquity ubiquity/success_command string \
-#  in-target mkdir /yc/; \
-#  in-target wget http://10.217.35.1/init/test.sh -O /yc/test.sh; \
-#  in-target chmod +x /yc/test.sh; \
-#  in-target bash "/yc/test.sh";
+  string mkdir /target/nsspc/; \
+  wget http://10.217.35.1/init/init1.sh -O /target/home/nsspc/init1.sh; \
+  wget http://10.217.35.1/init/init2.sh -O /target/home/nsspc/init2.sh; \
+  wget http://10.217.35.1/init/init3.sh -O /target/home/nsspc/init3.sh; \
+  chroot /target chmod +x /home/nsspc/init1.sh; \
+  chroot /target bash "/home/nsspc/init1.sh"
